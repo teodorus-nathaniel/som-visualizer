@@ -3,16 +3,23 @@
 
     import CartesianGraph from "./components/CartesianGraph.svelte";
     import ZoomBar from "./components/ZoomBar.svelte";
+    import type { Point } from "./models/Point";
     import Tailwind from "./Tailwind.svelte";
 
-    let data = [
+    let data: Point[] = [
         {
-            x: 5,
-            y: 5,
+            id: 1,
+            pos: {
+                x: 5,
+                y: 5,
+            }
         },
         {
-            x: 20,
-            y: 20,
+            id: 2,
+            pos: {
+                x: 20,
+                y: 20,
+            }
         },
     ];
 
@@ -21,6 +28,11 @@
     const handleZoom = (zoom: CustomEvent<number>) => {
         scale = zoom.detail;
     };
+
+    const handleClick = () => {
+        data[1].pos.x = 5;
+        data = data
+    }
 
     function onMouseWheel(e) {
         console.log(scale);
@@ -44,6 +56,7 @@
 
 <Tailwind />
 <main>
+    <button on:click={handleClick}>Update Pos</button>
     <ZoomBar on:zoom={handleZoom} {scale} />
     <CartesianGraph points={data} {scale} />
 </main>

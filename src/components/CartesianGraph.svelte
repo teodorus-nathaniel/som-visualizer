@@ -2,9 +2,11 @@
     import { spring } from "svelte/motion";
     import { onMount } from "svelte";
     import { pannable } from "../actions/pannable";
-    import type { Coord } from "../models/Coords";
+    import type { Point } from "../models/Point";
+    import CartesianPoint from "./CartesianPoint.svelte";
+import CartesianLine from "./CartesianLine.svelte";
 
-    export let points: Coord[];
+    export let points: Point[];
     export let scale: number;
 
     let lineSize = 10000;
@@ -69,8 +71,13 @@
         height={containerSize.height}>
         <line x1={-lineSize} y1={0} x2={lineSize} y2={0} />
         <line x1={0} y1={-lineSize} x2={0} y2={lineSize} />
-        {#each points as point (point)}
-            <circle cx={point.x * scale} cy={point.y * scale} r={1 * scale} />
+        {#each points as point, i (point.id)}
+            {#if points[i + 1]}
+                <CartesianLine pointA={point} pointB={points[i + 1]} {scale} />
+            {/if}
+        {/each}
+        {#each points as point, i (point.id)}
+            <CartesianPoint {point} {scale} />
         {/each}
     </svg>
 </div>
