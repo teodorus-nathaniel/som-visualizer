@@ -1,60 +1,33 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
-    import Icon from "svelte-awesome";
-    import { searchPlus, searchMinus } from "svelte-awesome/icons";
+  import { createEventDispatcher } from "svelte";
+  import Icon from "svelte-awesome";
+  import { searchPlus, searchMinus } from "svelte-awesome/icons";
 
-    export let scale: number;
-    const dispatch = createEventDispatcher();
+  export let scale: number;
+  const dispatch = createEventDispatcher();
 
-    $: dispatch("zoom", scale);
+  $: dispatch("zoom", scale);
 </script>
 
 <style type="text/scss">
-    div {
-        padding: 20px;
-        top: 50%;
-        left: 30px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
-        transform: translate(-50%, -50%) rotate(-90deg);
-    }
+  .root {
+    top: 50%;
+    left: 30px;
+    transform: translate(-50%, -50%) rotate(-90deg);
+  }
 
-    input[type="range"] {
-        background-color: #fff;
-        overflow: hidden;
-    }
-
-    .icon {
-        transform: rotate(90deg);
-        margin: 0 10px;
-    }
+  .icon {
+    transform: rotate(90deg);
+    margin: 0 10px;
+  }
 </style>
 
-<div class="absolute flex">
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        aria-hidden="true"
-        focusable="false"
-        width="1.5em"
-        height="1.5em"
-        class="icon"
-        preserveAspectRatio="xMidYMid meet"
-        viewBox="0 0 1024 1024"><path
-            d="M637 443H325c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h312c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8zm284 424L775 721c122.1-148.9 113.6-369.5-26-509c-148-148.1-388.4-148.1-537 0c-148.1 148.6-148.1 389 0 537c139.5 139.6 360.1 148.1 509 26l146 146c3.2 2.8 8.3 2.8 11 0l43-43c2.8-2.7 2.8-7.8 0-11zM696 696c-118.8 118.7-311.2 118.7-430 0c-118.7-118.8-118.7-311.2 0-430c118.8-118.7 311.2-118.7 430 0c118.7 118.8 118.7 311.2 0 430z"
-            fill="black" /></svg>
-    <input type="range" min={5} max={20} bind:value={scale} />
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        aria-hidden="true"
-        focusable="false"
-        width="1.5em"
-        height="1.5em"
-        class="icon"
-        preserveAspectRatio="xMidYMid meet"
-        viewBox="0 0 1024 1024"><path
-            d="M637 443H519V309c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v134H325c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h118v134c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V519h118c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8zm284 424L775 721c122.1-148.9 113.6-369.5-26-509c-148-148.1-388.4-148.1-537 0c-148.1 148.6-148.1 389 0 537c139.5 139.6 360.1 148.1 509 26l146 146c3.2 2.8 8.3 2.8 11 0l43-43c2.8-2.7 2.8-7.8 0-11zM696 696c-118.8 118.7-311.2 118.7-430 0c-118.7-118.8-118.7-311.2 0-430c118.8-118.7 311.2-118.7 430 0c118.7 118.8 118.7 311.2 0 430z"
-            fill="black" /></svg>
+<div class="absolute flex root floating-container">
+  <div class="icon">
+    <Icon data={searchMinus} />
+  </div>
+  <input type="range" min={5} max={20} bind:value={scale} />
+  <div class="icon">
+    <Icon data={searchPlus} />
+  </div>
 </div>
