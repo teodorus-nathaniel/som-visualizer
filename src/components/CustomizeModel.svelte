@@ -2,18 +2,27 @@
     import Button from "./Button.svelte";
     import InputText from "./InputText.svelte";
     import RadioButton from "./RadioButton.svelte";
+    import CreateDataset from "./CreateDataset.svelte";
 
-    let selected: string = "1";
-    let model = 0;
+    let selected: string = "2";
+    let model: string = "2D";
+    let createDataset: boolean = false;
 
-    function onChange(event: any) {
+    function handleChange(event: any) {
         selected = event.currentTarget.value;
+    }
+
+    function handleClick(event: any) {
+        model = event.target.name;
     }
 </script>
 
 <style type="text/scss">
     .header {
         padding: 64px 64px 0px;
+    }
+    .customize-model {
+        padding-bottom: 64px;
     }
     hr {
         border: none;
@@ -27,7 +36,7 @@
     }
 </style>
 
-<div class="flex-col max-w-screen-xl mx-auto">
+<div class="flex-col max-w-screen-xl mx-auto customize-model">
     <div class="flex-col header">
         <p class="font-bold text-4xl">SOM Visualizer</p>
         <p class="text-2xl">Self Organizing Map</p>
@@ -41,19 +50,21 @@
                 <div class="flex pt-2">
                     <Button
                         name="2D"
-                        color="secondary"
-                        className="mr-2 rounded font-bold" />
+                        color={`${model === '2D' ? 'primary' : 'secondary'}`}
+                        className="mr-2 rounded-lg font-bold"
+                        {handleClick} />
                     <Button
                         name="Linear"
-                        color="secondary"
-                        className="rounded font-bold" />
+                        color={`${model === 'Linear' ? 'primary' : 'secondary'}`}
+                        className="rounded font-bold"
+                        {handleClick} />
                 </div>
             </div>
             <div class="py-3">
                 <p>Neuron Count</p>
                 <InputText
                     color="primary"
-                    className="mt-2 focus:background-color rounded"
+                    className="mt-2 focus:background-color rounded-lg"
                     type="number" />
             </div>
         </div>
@@ -77,11 +88,11 @@
                 className="py-1"
                 value="1"
                 {selected}
-                {onChange} />
+                {handleChange} />
             {#if selected === '1'}
                 <InputText
                     color="primary"
-                    className="mt-2 focus:background-color rounded"
+                    className="mt-2 focus:background-color rounded-lg"
                     type="number" />
             {/if}
             <RadioButton
@@ -91,12 +102,9 @@
                 className="py-1"
                 value="2"
                 {selected}
-                {onChange} />
+                {handleChange} />
             {#if selected === '2'}
-                <InputText
-                    color="primary"
-                    className="mt-2 focus:background-color rounded"
-                    type="number" />
+                <CreateDataset />
             {/if}
             <RadioButton
                 name="dataset"
@@ -105,7 +113,7 @@
                 className="py-1"
                 value="3"
                 {selected}
-                {onChange} />
+                {handleChange} />
             {#if selected === '3'}
                 <div class="flex  items-center bg-grey-lighter">
                     <label

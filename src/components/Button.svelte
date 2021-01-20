@@ -1,19 +1,20 @@
 <script lang="ts">
     export let name: string;
     export let color: string;
-    export let className: string = '';
+    export let className: string = "";
+    export let handleClick: svelte.JSX.EventHandler<Event, HTMLInputElement>;
 
     let hover = false;
     const handleHover = () => {
         hover = !hover;
     };
     const inverse = (color: string) => {
-        if (color === 'primary') {
-            if (hover) return 'secondary';
-            return 'primary';
-        } else if (color === 'secondary') {
-            if (hover) return 'primary';
-            return 'secondary';
+        if (color === "primary") {
+            if (hover) return "secondary";
+            return "primary";
+        } else if (color === "secondary") {
+            if (hover) return "primary";
+            return "secondary";
         }
     };
 </script>
@@ -39,6 +40,8 @@
 <button
     on:mouseover={handleHover}
     on:mouseout={handleHover}
-    class={`${hover ? inverse(color) : inverse(color)} ${className}`}>
+    on:click={handleClick}
+    class={`${hover ? inverse(color) : inverse(color)} ${className}`}
+    {name}>
     {name}
 </button>

@@ -5,7 +5,7 @@
     export let className: string;
     export let value: string;
     export let selected: string;
-    export let onChange: svelte.JSX.EventHandler<Event, HTMLInputElement>;
+    export let handleChange: svelte.JSX.EventHandler<Event, HTMLInputElement>;
 </script>
 
 <style type="text/scss">
@@ -21,6 +21,6 @@
         {name}
         {value}
         checked={selected === value}
-        on:change={onChange} />
+        on:change={handleChange} />
     <label for={id}>{label}</label>
 </div>

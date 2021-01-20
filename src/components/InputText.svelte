@@ -1,7 +1,7 @@
 <script lang="ts">
     export let color: string;
-    export let className: string = '';
-    export let type: string = 'text';
+    export let className: string = "";
+    export let type: string = "text";
 </script>
 
 <style type="text/scss">
@@ -16,9 +16,9 @@
         outline-color: #4d85f1;
     }
     .secondary {
-        background-color: #ffffff;
-        color: #4d85f1;
-        border: 1px solid #4d85f1;
+        background-color: #4d85f1;
+        color: #ffffff;
+        border: 1px solid #ffffff;
     }
     .secondary:focus {
         outline-color: #ffffff;
