@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SomController from "./components/SomController.svelte";
+  import CustomizeModel from "./components/CustomizeModel.svelte";
   import Tailwind from "./Tailwind.svelte";
 </script>
 
@@ -18,5 +18,5 @@
 
 <Tailwind />
 <main>
-  <SomController />
+  <CustomizeModel />
 </main>
