@@ -32,10 +32,14 @@
   let showNotification = false;
   let timeoutId = null;
 
-  onMount(() => {
+  function setTimeoutShowNotification() {
     timeoutId = setTimeout(() => {
       showNotification = true;
     }, 3000);
+  }
+
+  onMount(() => {
+    setTimeoutShowNotification();
   });
 
   function continueSom() {
@@ -44,6 +48,7 @@
     neurons = iteration.value.weights ?? neurons;
     winningNeuron = iteration.value.bmu ?? [-1, -1];
     evaluatedPoint = iteration.value.dataIndex ?? -1;
+    showNotification = false;
   }
 
   function handleEnterPressed(e) {
@@ -51,11 +56,32 @@
 
     continueSom();
 
-    showNotification = false;
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       showNotification = true;
     }, 3000);
+  }
+
+  let autoplay = false;
+  let intervalId = null;
+  const DEFAULT_ANIMATION_SPEED = 3000;
+  let animationSpeed = 1500;
+  function handleAutoplay(data: CustomEvent<boolean>) {
+    autoplay = data.detail;
+  }
+  $: {
+    clearInterval(intervalId);
+    if(autoplay) {
+      intervalId = setInterval(continueSom, animationSpeed);
+    }
+  }
+  $: {
+    if(!autoplay) setTimeoutShowNotification()
+    else clearTimeout(timeoutId)
+  }
+
+  function handleSpeedChange(data: CustomEvent<number>) {
+    animationSpeed = (100 - data.detail) * DEFAULT_ANIMATION_SPEED / 100 + 200;
   }
 
   onMount(() => {
@@ -94,7 +120,7 @@
   Press enter to continue...
 </p>
 <ZoomBar on:zoom={handleZoom} {scale} />
-<AnimationController />
+<AnimationController on:changeSpeed={handleSpeedChange} on:autoplay={handleAutoplay} />
 <CartesianGraph
   {evaluatedPoint}
   {winningNeuron}

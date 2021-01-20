@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
   import Icon from "svelte-awesome";
   import {
     plusCircle,
@@ -8,14 +10,17 @@
   } from "svelte-awesome/icons";
   import { animationConfig } from "../stores/animationConfig";
 
-  let speed = 50;
+  const dispatch = createEventDispatcher();
+  
   let autoplay = false;
+  const handleAutoplay = (play: boolean) => {
+    autoplay = play;
+    dispatch('autoplay', play);
+  }
+
+  let speed = 50;
   $: {
-    animationConfig.update((prev) => ({
-      ...prev,
-      duration: (speed / 100) * 5000
-    }));
-    console.log($animationConfig);
+    dispatch('changeSpeed', speed);
   }
 </script>
 
@@ -48,11 +53,12 @@
         <Icon data={plusCircle} />
       </div>
     </div>
-    <div class="play-btn">
-      <button class={`${autoplay ? 'hidden' : ''}`}><Icon
+    <div class="play-btn flex align-center">
+      <p class="mx-2">Autoplay</p>
+      <button on:click={() => handleAutoplay(true)} class={`${autoplay ? 'hidden' : ''}`}><Icon
           data={playCircle}
           scale="1.5" /></button>
-      <button class={`${autoplay ? '' : 'hidden'}`}><Icon
+      <button on:click={() => handleAutoplay(false)} class={`${autoplay ? '' : 'hidden'}`}><Icon
           data={pauseCircle}
           scale="1.5" /></button>
     </div>
