@@ -32,15 +32,26 @@
   let showNotification = false;
   let timeoutId = null;
 
-  function handleEnterPressed(e) {
-    if (e.key !== "Enter") return;
+  onMount(() => {
+    timeoutId = setTimeout(() => {
+      showNotification = true;
+    }, 3000);
+  });
 
+  function continueSom() {
     const iteration = som.next();
     if (iteration.done || !iteration.value) return;
     neurons = iteration.value.weights ?? neurons;
     winningNeuron = iteration.value.bmu ?? [-1, -1];
     evaluatedPoint = iteration.value.dataIndex ?? -1;
+  }
 
+  function handleEnterPressed(e) {
+    if (e.key !== "Enter") return;
+
+    continueSom();
+
+    showNotification = false;
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       showNotification = true;
@@ -69,7 +80,13 @@
     transition: opacity 300ms ease-out;
   }
   .notification.show {
-    opacity: 1;
+    animation: fade 2s linear infinite;
+  }
+
+  @keyframes fade {
+    50% {
+      opacity: 1;
+    }
   }
 </style>
 
