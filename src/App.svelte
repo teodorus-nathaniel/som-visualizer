@@ -1,43 +1,6 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte/internal";
-  import AnimationController from "./components/AnimationController.svelte";
-
-  import CartesianGraph from "./components/Cartesian/CartesianGraph.svelte";
-  import ZoomBar from "./components/ZoomBar.svelte";
-  import { getNeurons, getPoints } from "./data/data";
+  import SomController from "./components/SomController.svelte";
   import Tailwind from "./Tailwind.svelte";
-
-  let scale = 10;
-
-  let neuronsData = getNeurons();
-  let pointsData = getPoints();
-
-  const handleZoom = (zoom: CustomEvent<number>) => {
-    scale = zoom.detail;
-  };
-
-  const handleClick = () => {
-    neuronsData[0][1].x = 5;
-    neuronsData = neuronsData;
-
-    pointsData = getPoints();
-  };
-
-  function onMouseWheel(e) {
-    console.log(scale);
-    if (e.deltaY > 0) scale = Math.max(1, scale - 1);
-    else scale = Math.min(20, scale + 1);
-  }
-
-  onMount(() => {
-    window.addEventListener("mousewheel", onMouseWheel);
-  });
-
-  onDestroy(() => {
-    window.removeEventListener("mousewheel", onMouseWheel);
-  });
-
-  $: console.log(scale);
 </script>
 
 <style type="text/scss">
@@ -55,8 +18,5 @@
 
 <Tailwind />
 <main>
-  <button class="absolute" on:click={handleClick}>Update Pos</button>
-  <ZoomBar on:zoom={handleZoom} {scale} />
-  <AnimationController />
-  <CartesianGraph neurons={neuronsData} {scale} dataPoints={pointsData} />
+  <SomController />
 </main>

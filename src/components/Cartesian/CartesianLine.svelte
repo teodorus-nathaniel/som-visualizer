@@ -9,16 +9,16 @@
   export let scale: number;
   export let color: string = "#c0c0c0";
 
-  let posAX = tweened(pointA.x, $animationConfig);
-  let posAY = tweened(pointA.y, $animationConfig);
-  let posBX = tweened(pointB.x, $animationConfig);
-  let posBY = tweened(pointB.y, $animationConfig);
+  let posAX = tweened(pointA[0], $animationConfig);
+  let posAY = tweened(pointA[1], $animationConfig);
+  let posBX = tweened(pointB[0], $animationConfig);
+  let posBY = tweened(pointB[1], $animationConfig);
 
   $: {
-    posAX.set(pointA.x);
-    posAY.set(pointA.y);
-    posBX.set(pointB.x);
-    posBY.set(pointB.y);
+    posAX.set(pointA[0]);
+    posAY.set(pointA[1]);
+    posBX.set(pointB[0]);
+    posBY.set(pointB[1]);
   }
 </script>
 

@@ -5,10 +5,13 @@
   import type { Coord } from "../../models/Coord";
   import CartesianPoint from "./CartesianPoint.svelte";
   import CartesianLine from "./CartesianLine.svelte";
+  import getNearestElement from "../../utils/getNearestElement";
+  import getRainbowColors from "../../utils/getRainbowColors";
 
   export let neurons: Coord[][];
   export let scale: number;
   export let dataPoints: Coord[];
+  export let winningNeuron: number[], evaluatedPoint: number;
 
   let lineSize = 10000;
 
@@ -47,6 +50,18 @@
     coords.damping = springDefault.damping;
     coords.stiffness = springDefault.stiffness;
   });
+
+  let colors = [];
+  $: {
+    colors = dataPoints.map((coord) => {
+      const allNeurons = neurons.reduce((acc, el) => [...acc, ...el], []);
+
+      const nearestIndex = getNearestElement(allNeurons, coord);
+      return nearestIndex;
+    });
+  }
+
+  $: length = neurons.length * neurons[0].length;
 </script>
 
 <style type="text/scss">
@@ -84,11 +99,20 @@
     {/each}
     {#each neurons as row, i (i)}
       {#each row as neuron, j (j)}
-        <CartesianPoint point={neuron} {scale} />
+        <CartesianPoint
+          highlightPoint={i === winningNeuron[0] && j === winningNeuron[1]}
+          color={getRainbowColors((i * neurons.length + j) / length)}
+          point={neuron}
+          {scale} />
       {/each}
     {/each}
     {#each dataPoints as point, i (i)}
-      <CartesianPoint {point} {scale} small />
+      <CartesianPoint
+        color={getRainbowColors(colors[i] / length)}
+        {point}
+        {scale}
+        highlightPoint={i === evaluatedPoint}
+        small />
     {/each}
   </svg>
 </div>
