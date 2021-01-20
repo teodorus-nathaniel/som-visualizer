@@ -1,7 +1,5 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import Icon from "svelte-awesome";
-    import { searchPlus, searchMinus } from "svelte-awesome/icons";
 
     export let scale: number;
     const dispatch = createEventDispatcher();

@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte/internal";
-
     import CartesianGraph from "./components/CartesianGraph.svelte";
     import ZoomBar from "./components/ZoomBar.svelte";
+    import CustomizeModel from "./components/CustomizeModel.svelte";
     import Tailwind from "./Tailwind.svelte";
 
     let data = [
@@ -16,14 +16,13 @@
         },
     ];
 
-    let scale = 10;
+    let scale: number = 10;
 
     const handleZoom = (zoom: CustomEvent<number>) => {
         scale = zoom.detail;
     };
 
     function onMouseWheel(e) {
-        console.log(scale);
         if (e.deltaY > 0) scale = Math.max(1, scale - 1);
         else scale = Math.min(20, scale + 1);
     }
@@ -35,8 +34,6 @@
     onDestroy(() => {
         window.removeEventListener("mousewheel", onMouseWheel);
     });
-
-    $: console.log(scale);
 </script>
 
 <style type="text/scss">
@@ -44,6 +41,7 @@
 
 <Tailwind />
 <main>
-    <ZoomBar on:zoom={handleZoom} {scale} />
-    <CartesianGraph points={data} {scale} />
+    <!-- <ZoomBar on:zoom={handleZoom} {scale} />
+    <CartesianGraph points={data} {scale} /> -->
+    <CustomizeModel/>
 </main>
