@@ -32,6 +32,7 @@ function update(
       Math.abs(position[1] - currentPosition[1]);
     const sigma = radius * Math.exp(-currentIteration / maxIteration);
     const NS = Math.exp(-Math.pow(d, 2) / (2 * Math.pow(sigma, 2)));
+    console.log({ sigma, NS });
 
     for (let j = 0; j < weightToUpdate.length; j++) {
       weights[i][j] += NS * LR * (sample[j] - weights[i][j]);
@@ -108,6 +109,7 @@ export default function* train2dSOM(
       yield { epoch: i + 1, weights: generate2dWeights(weights) };
     }
 
+    console.log({ i });
     yield { weights: generate2dWeights(weights), epoch: i + 1 };
   }
 }

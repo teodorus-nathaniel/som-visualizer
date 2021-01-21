@@ -25,5 +25,5 @@ const randomPoint = (): Coord => {
   ];
 };
 
-export let getPoints = (): Coord[] =>
-  Array.from({ length: 20 }).map(randomPoint);
+export let getPoints = (size: number): Coord[] =>
+  Array.from({ length: size }).map(randomPoint);

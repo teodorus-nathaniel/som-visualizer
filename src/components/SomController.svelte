@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte/internal";
+  import { createEventDispatcher, onDestroy, onMount } from "svelte/internal";
   import AnimationController from "./AnimationController.svelte";
   import CartesianGraph from "./Cartesian/CartesianGraph.svelte";
   import ZoomBar from "./ZoomBar.svelte";
@@ -8,6 +8,9 @@
   import { getPoints } from "../data/data";
   import type { Coord } from "../models/Coord";
   import train2dSOM from "../core/som-2d";
+
+  const dispatch = createEventDispatcher();
+  export let open;
 
   let scale = 10;
 
@@ -18,6 +21,8 @@
   };
 
   const som = train2dSOM(pointsData, 9, 0.5, 500, 2);
+  let doneTraining = false;
+
   let somValue = som.next().value;
   let neurons: Coord[][] = somValue ? somValue.weights : [];
 
@@ -44,22 +49,51 @@
 
   function continueSom() {
     const iteration = som.next();
-    if (iteration.done || !iteration.value) return;
+    if (iteration.done || !iteration.value) {
+      doneTraining = true;
+      return;
+    }
+    console.log(iteration.value);
     neurons = iteration.value.weights ?? neurons;
     winningNeuron = iteration.value.bmu ?? [-1, -1];
     evaluatedPoint = iteration.value.dataIndex ?? -1;
     showNotification = false;
   }
 
-  function handleEnterPressed(e) {
+  let skipEpoch = 0;
+  let showLoading = false;
+  let iterationLeft = 0;
+  function doSomInBackground() {
+    if (iterationLeft <= 0 || doneTraining) {
+      setTimeoutShowNotification();
+      showLoading = false;
+      skipEpoch = 0;
+      return;
+    }
+    window.requestAnimationFrame(() => {
+      continueSom();
+      doSomInBackground();
+      iterationLeft -= 1;
+    });
+  }
+  $: {
+    if (skipEpoch >= 0 && !doneTraining) {
+      iterationLeft = 2 * skipEpoch * pointsData.length + skipEpoch;
+      showLoading = true;
+      doSomInBackground();
+    }
+  }
+
+  function handleKeyPressed(e) {
+    if (e.keyCode === 10) {
+      dispatch("close");
+    }
     if (e.key !== "Enter") return;
 
     continueSom();
 
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      showNotification = true;
-    }, 3000);
+    setTimeoutShowNotification();
   }
 
   let autoplay = false;
@@ -71,22 +105,23 @@
   }
   $: {
     clearInterval(intervalId);
-    if(autoplay) {
+    if (autoplay) {
       intervalId = setInterval(continueSom, animationSpeed);
     }
   }
   $: {
-    if(!autoplay) setTimeoutShowNotification()
-    else clearTimeout(timeoutId)
+    if (!autoplay) setTimeoutShowNotification();
+    else clearTimeout(timeoutId);
   }
 
   function handleSpeedChange(data: CustomEvent<number>) {
-    animationSpeed = (100 - data.detail) * DEFAULT_ANIMATION_SPEED / 100 + 200;
+    animationSpeed =
+      ((100 - data.detail) * DEFAULT_ANIMATION_SPEED) / 100 + 200;
   }
 
   onMount(() => {
     window.addEventListener("mousewheel", onMouseWheel);
-    window.addEventListener("keypress", handleEnterPressed);
+    window.addEventListener("keypress", handleKeyPressed);
   });
 
   onDestroy(() => {
@@ -108,6 +143,25 @@
   .notification.show {
     animation: fade 2s linear infinite;
   }
+  .full-screen-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    z-index: 999;
+    display: none;
+    font-weight: bold;
+  }
+  .full-screen-loading.show {
+    display: flex;
+  }
 
   @keyframes fade {
     50% {
@@ -116,11 +170,18 @@
   }
 </style>
 
-<p class={`notification ${showNotification ? 'show' : ''}`}>
-  Press enter to continue...
+<div class={`full-screen-loading ${showLoading ? 'show' : ''}`}>Loading...</div>
+<p class={`notification flex flex-col ${showNotification ? 'show' : ''}`}>
+  {#if doneTraining}
+    <p class="text-center">Training Complete.</p>
+    <p class="text-center">Press CTRL+ENTER to go back to home...</p>
+  {:else}Press ENTER to continue...{/if}
 </p>
 <ZoomBar on:zoom={handleZoom} {scale} />
-<AnimationController on:changeSpeed={handleSpeedChange} on:autoplay={handleAutoplay} />
+<AnimationController
+  on:changeSpeed={handleSpeedChange}
+  on:autoplay={handleAutoplay}
+  on:changeSkipEpoch={(data) => (skipEpoch = data.detail)} />
 <CartesianGraph
   {evaluatedPoint}
   {winningNeuron}

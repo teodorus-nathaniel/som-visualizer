@@ -8,19 +8,18 @@
     playCircle,
     pauseCircle
   } from "svelte-awesome/icons";
-  import { animationConfig } from "../stores/animationConfig";
 
   const dispatch = createEventDispatcher();
-  
+
   let autoplay = false;
   const handleAutoplay = (play: boolean) => {
     autoplay = play;
-    dispatch('autoplay', play);
-  }
+    dispatch("autoplay", play);
+  };
 
   let speed = 50;
   $: {
-    dispatch('changeSpeed', speed);
+    dispatch("changeSpeed", speed);
   }
 </script>
 
@@ -39,6 +38,22 @@
     top: 50%;
     transform: translateY(-50%);
   }
+  .rounded-btn {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    background: black;
+    color: white;
+  }
+  .skip-btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .epoch-label {
+    position: relative;
+    top: 3px;
+  }
 </style>
 
 <div class="absolute flex root floating-container">
@@ -54,13 +69,40 @@
       </div>
     </div>
     <div class="play-btn flex align-center">
-      <p class="mx-2">Autoplay</p>
-      <button on:click={() => handleAutoplay(true)} class={`${autoplay ? 'hidden' : ''}`}><Icon
-          data={playCircle}
-          scale="1.5" /></button>
-      <button on:click={() => handleAutoplay(false)} class={`${autoplay ? '' : 'hidden'}`}><Icon
-          data={pauseCircle}
-          scale="1.5" /></button>
+      <p class="mx-2 epoch-label">Autoplay</p>
+      <button
+        on:click={() => handleAutoplay(true)}
+        class={`${autoplay ? 'hidden' : ''}`}>
+        <Icon data={playCircle} scale="1.5" />
+      </button>
+      <button
+        on:click={() => handleAutoplay(false)}
+        class={`${autoplay ? '' : 'hidden'}`}>
+        <Icon data={pauseCircle} scale="1.5" />
+      </button>
+    </div>
+    <div class="skip-btn flex align-center">
+      <p class="mx-2 epoch-label">Skip Epoch</p>
+      <button
+        class="rounded-btn mx-2"
+        on:click={() => dispatch('changeSkipEpoch', 10)}>
+        10
+      </button>
+      <button
+        class="rounded-btn mx-2"
+        on:click={() => dispatch('changeSkipEpoch', 50)}>
+        50
+      </button>
+      <button
+        class="rounded-btn mx-2"
+        on:click={() => dispatch('changeSkipEpoch', 100)}>
+        100
+      </button>
+      <button
+        class="rounded-btn mx-2"
+        on:click={() => dispatch('changeSkipEpoch', 500)}>
+        500
+      </button>
     </div>
   </div>
 </div>
