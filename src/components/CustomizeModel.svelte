@@ -1,6 +1,6 @@
 <script lang="ts">
   import Button from "./Button.svelte";
-  import InputText from "./InputText.svelte";
+  import InputNumber from "./InputNumber.svelte";
   import RadioButton from "./RadioButton.svelte";
   import CreateDataset from "./CreateDataset.svelte";
   import SomPreview from "./SomPreview.svelte";
@@ -12,13 +12,18 @@
 
   let selected: string = "1";
   let model: string = "2d";
-  let createDataset: boolean = false;
   let neuronCount = 9;
+  let learningRate = 0.5;
+  let epoch = 500;
+  let radius = 2;
 
   let modelError = false;
   let openCreateDataset = false;
+  let saveError = "";
 
   let presetDatasetSize = 20;
+
+  let customDataset: number[][] = [];
 
   $: {
     if (
@@ -38,8 +43,21 @@
     }
   }
 
+  function handleChangeData(e: any) {
+    return Math.floor(e.target.value);
+  }
+
   function handleChangeNeuronCount(e: any) {
-    neuronCount = e.detail;
+    neuronCount = handleChangeData(e);
+  }
+  function handleChangeEpoch(e) {
+    epoch = handleChangeData(e);
+  }
+  function handleChangeRadius(e) {
+    radius = handleChangeData(e);
+  }
+  function handleChangeLearningRate(e) {
+    radius = e.target.value;
   }
 
   function handleClick(event: any) {
@@ -47,16 +65,28 @@
   }
 
   function handleChangePresetDataset(e) {
-    presetDatasetSize = e.detail;
+    presetDatasetSize = e.target.value;
   }
 
   function handleSave() {
     if (modelError) return;
 
+    if (neuronCount === 0) {
+      saveError = "Neuron count must be at least 1!";
+    } else if (selected === "2" && customDataset.length === 0) {
+      saveError = "Custom Dataset must have at least 1 point!";
+    } else if (learningRate <= 0 || radius <= 0 || epoch <= 0) {
+      saveError = "Hyperparamters must be more than 0!";
+    }
+
     const data = {
       neuronCount,
-      type: selected
+      type: model,
+      epoch,
+      radius,
+      learningRate
     };
+
     if (selected === "1") {
       dispatch("save", {
         ...data,
@@ -64,9 +94,9 @@
       });
     } else if (selected === "2") {
       dispatch("save", {
-        ...data
+        ...data,
+        dataset: customDataset
       });
-    } else {
     }
   }
 </script>
@@ -121,12 +151,11 @@
       <div class="py-3">
         <p>Neuron Count</p>
         <div class="flex items-center mt-2">
-          <InputText
+          <InputNumber
             value={neuronCount}
             color="primary"
             className="focus:background-color rounded-lg"
-            on:change={handleChangeNeuronCount}
-            width="12ch" />
+            handleChange={handleChangeNeuronCount} />
           {#if modelError}
             <div
               class="flex flex-col ml-5"
@@ -146,12 +175,44 @@
     </div>
   </div>
   <hr class="my-12" />
+  <div>
+    <p class="font-bold text-2xl mb-2">Hyperparameters</p>
+    <div class="flex mx-auto">
+      <div class="py-3 pr-5">
+        <p>Learning Rate</p>
+        <div class="flex items-center mt-2">
+          <InputNumber
+            value={learningRate}
+            color="primary"
+            className="focus:background-color rounded-lg"
+            handleChange={handleChangeLearningRate} />
+        </div>
+      </div>
+      <div class="py-3 px-5">
+        <p>Epoch</p>
+        <div class="flex items-center mt-2">
+          <InputNumber
+            value={epoch}
+            color="primary"
+            className="focus:background-color rounded-lg"
+            handleChange={handleChangeEpoch} />
+        </div>
+      </div>
+      <div class="py-3 px-5">
+        <p>Radius</p>
+        <div class="flex items-center mt-2">
+          <InputNumber
+            value={radius}
+            color="primary"
+            className="focus:background-color rounded-lg"
+            handleChange={handleChangeRadius} />
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="my-12" />
   <div class="flex-col">
-    <p class="font-bold text-2xl mb-1">Input Data</p>
-    <p class="mb-5">
-      For input that have more than 2 dimension, we will use PCA to reduce the
-      dimension to 2
-    </p>
+    <p class="font-bold text-2xl mb-5">Input Data</p>
     <div class="flex-col my-2">
       <RadioButton
         name="dataset"
@@ -164,49 +225,28 @@
       {#if selected === '1'}
         <div class="mt-1 ml-8 mb-5">
           <p class="mb-1">Dataset Size</p>
-          <InputText
+          <InputNumber
             color="primary"
             value={presetDatasetSize}
-            width="12ch"
             className="focus:background-color rounded-lg"
-            on:change={handleChangePresetDataset} />
+            handleChange={handleChangePresetDataset} />
         </div>
       {/if}
       <RadioButton
         name="dataset"
         id="custom-dataset"
-        label="Use Custom Dataset (Shape: 0x0)"
+        label={`Use Custom Dataset (Shape: ${customDataset.length}x${customDataset[0]?.length ?? 0})`}
         className="py-2"
         value="2"
         {selected}
         {handleChange} />
       {#if openCreateDataset}
-        <CreateDataset on:close={() => (openCreateDataset = false)} />
-      {/if}
-      <RadioButton
-        name="dataset"
-        id="upload-dataset"
-        label="Upload Dataset"
-        className="py-2"
-        value="3"
-        {selected}
-        {handleChange} />
-      {#if selected === '3'}
-        <div class="flex ml-8 mt-1 items-center bg-grey-lighter">
-          <button
-            class="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg button-upload tracking-wide border border-blue cursor-pointer">
-            <svg
-              class="w-8 h-8"
-              style="fill: var(--primary)"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20">
-              <path
-                d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-            </svg>
-            <span class="mt-2 text-base leading-normal">Select a CSV file</span>
-            <input type="file" class="hidden" />
-          </button>
-        </div>
+        <CreateDataset
+          on:save={(e) => {
+            console.log(e.detail);
+            customDataset = e.detail;
+          }}
+          on:close={() => (openCreateDataset = false)} />
       {/if}
     </div>
   </div>

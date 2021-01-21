@@ -5,6 +5,14 @@
   import Tailwind from "./Tailwind.svelte";
 
   let openSomController = false;
+  let somData: {
+    neuronCount: number;
+    type: string;
+    dataset: number[][];
+    epoch: number;
+    radius: number;
+    learningRate: number;
+  } | null = null;
 </script>
 
 <style type="text/scss">
@@ -30,8 +38,17 @@
 
 <Tailwind />
 <main>
-  <CustomizeModel />
-  {#if openSomController}
-    <SomController on:close={() => (openSomController = false)} />
+  <CustomizeModel
+    on:save={(e) => {
+      somData = e.detail;
+      openSomController = true;
+    }} />
+  {#if openSomController && somData}
+    <SomController
+      data={somData}
+      on:close={() => {
+        openSomController = false;
+        somData = null;
+      }} />
   {/if}
 </main>

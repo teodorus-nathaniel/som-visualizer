@@ -26,6 +26,10 @@
     color: var(--primary);
     border: 1px solid var(--primary);
   }
+  .tertiary {
+    background-color: #233a67;
+    color: white;
+  }
   button {
     transition: filter 150ms ease-out;
   }

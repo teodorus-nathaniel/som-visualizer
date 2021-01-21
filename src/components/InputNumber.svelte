@@ -1,15 +1,11 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-
+  export let name: string = "";
   export let color: string;
+  export let disabled: boolean = false;
+  export let width = "10ch";
   export let className: string = "";
-  export let width: string = "auto";
-  export let value: number;
-
-  const dispatch = createEventDispatcher();
-  $: {
-    dispatch("change", value);
-  }
+  export let value: string | number = "";
+  export let handleChange: svelte.JSX.EventHandler<Event, HTMLInputElement>;
 </script>
 
 <style type="text/scss">
@@ -31,10 +27,17 @@
   .secondary:focus {
     outline-color: #ffffff;
   }
+  .disabled {
+    background-color: rgba(100, 100, 100, 0.5);
+  }
 </style>
 
 <input
   type="number"
+  {name}
+  min={0}
+  class={`${color} ${className} ${disabled ? 'disabled' : ''}`}
   style={`width: ${width}`}
-  bind:value
-  class={`${color} ${className}`} />
+  {value}
+  {disabled}
+  on:change={handleChange} />
