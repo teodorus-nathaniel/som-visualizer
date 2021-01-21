@@ -1,12 +1,11 @@
 <script lang="ts">
     import Button from "./Button.svelte";
-    import InputText from "./InputText.svelte";
+    import InputNumber from "./InputNumber.svelte";
     import RadioButton from "./RadioButton.svelte";
     import CreateDataset from "./CreateDataset.svelte";
 
-    let selected: string = "2";
+    let selected: string = "1";
     let model: string = "2D";
-    let createDataset: boolean = false;
 
     function handleChange(event: any) {
         selected = event.currentTarget.value;
@@ -62,10 +61,10 @@
             </div>
             <div class="py-3">
                 <p>Neuron Count</p>
-                <InputText
+                <InputNumber
                     color="primary"
                     className="mt-2 focus:background-color rounded-lg"
-                    type="number" />
+                     />
             </div>
         </div>
         <div class="w-2/4 rounded" style="border: 1px solid #4d85f1">
@@ -90,10 +89,10 @@
                 {selected}
                 {handleChange} />
             {#if selected === '1'}
-                <InputText
+                <InputNumber
                     color="primary"
                     className="mt-2 focus:background-color rounded-lg"
-                    type="number" />
+                     />
             {/if}
             <RadioButton
                 name="dataset"

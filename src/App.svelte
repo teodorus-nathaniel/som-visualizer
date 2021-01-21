@@ -19,6 +19,6 @@
 
 <Tailwind />
 <main>
-  <!-- <CustomizeModel /> -->
-  <SomController />
+  <CustomizeModel />
+  <!-- <SomController /> -->
 </main>

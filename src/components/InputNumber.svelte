@@ -1,7 +1,9 @@
 <script lang="ts">
+    export let name: string;
     export let color: string;
     export let className: string = "";
-    export let type: string = "text";
+    export let value: string | number = "";
+    export let handleChange: svelte.JSX.EventHandler<Event, HTMLInputElement>;
 </script>
 
 <style type="text/scss">
@@ -25,4 +27,4 @@
     }
 </style>
 
-<input {type} class={`${color} ${className}`} />
+<input type="number" {name} min={0} class={`${color} ${className}`} {value} on:change={handleChange} />
