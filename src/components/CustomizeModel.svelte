@@ -1,17 +1,17 @@
 <script lang="ts">
-  import Button from "./Button.svelte";
-  import InputNumber from "./InputNumber.svelte";
-  import RadioButton from "./RadioButton.svelte";
-  import CreateDataset from "./CreateDataset.svelte";
-  import SomPreview from "./SomPreview.svelte";
-  import { createEventDispatcher } from "svelte";
-  import { fly, fade } from "svelte/transition";
-  import { getPoints } from "../data/data";
+  import Button from './Button.svelte';
+  import InputNumber from './InputNumber.svelte';
+  import RadioButton from './RadioButton.svelte';
+  import CreateDataset from './CreateDataset.svelte';
+  import SomPreview from './SomPreview.svelte';
+  import { createEventDispatcher } from 'svelte';
+  import { fly, fade } from 'svelte/transition';
+  import { getPoints } from '../data/data';
 
   const dispatch = createEventDispatcher();
 
-  let selected: string = "1";
-  let model: string = "2d";
+  let selected: string = '1';
+  let model: string = '2d';
   let neuronCount = 9;
   let learningRate = 0.5;
   let epoch = 500;
@@ -19,7 +19,7 @@
 
   let modelError = false;
   let openCreateDataset = false;
-  let saveError = "";
+  let saveError = '';
 
   let presetDatasetSize = 20;
 
@@ -27,7 +27,7 @@
 
   $: {
     if (
-      model === "2d" &&
+      model === '2d' &&
       Math.sqrt(neuronCount) > Math.floor(Math.sqrt(neuronCount))
     ) {
       modelError = true;
@@ -38,7 +38,7 @@
 
   function handleChange(event: any) {
     selected = event.currentTarget.value;
-    if (selected === "2") {
+    if (selected === '2') {
       openCreateDataset = true;
     }
   }
@@ -72,11 +72,11 @@
     if (modelError) return;
 
     if (neuronCount === 0) {
-      saveError = "Neuron count must be at least 1!";
-    } else if (selected === "2" && customDataset.length === 0) {
-      saveError = "Custom Dataset must have at least 1 point!";
+      saveError = 'Neuron count must be at least 1!';
+    } else if (selected === '2' && customDataset.length === 0) {
+      saveError = 'Custom Dataset must have at least 1 point!';
     } else if (learningRate <= 0 || radius <= 0 || epoch <= 0) {
-      saveError = "Hyperparamters must be more than 0!";
+      saveError = 'Hyperparamters must be more than 0!';
     }
 
     const data = {
@@ -84,45 +84,22 @@
       type: model,
       epoch,
       radius,
-      learningRate
+      learningRate,
     };
 
-    if (selected === "1") {
-      dispatch("save", {
+    if (selected === '1') {
+      dispatch('save', {
         ...data,
-        dataset: getPoints(presetDatasetSize)
+        dataset: getPoints(presetDatasetSize),
       });
-    } else if (selected === "2") {
-      dispatch("save", {
+    } else if (selected === '2') {
+      dispatch('save', {
         ...data,
-        dataset: customDataset
+        dataset: customDataset,
       });
     }
   }
 </script>
-
-<style type="text/scss">
-  .customize-model {
-    padding-bottom: 64px;
-  }
-  hr {
-    border: none;
-    height: 1px;
-    background-image: linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0),
-      rgba(0, 0, 0, 0.1),
-      rgba(0, 0, 0, 0)
-    );
-  }
-  .button-upload {
-    border: 1px solid var(--primary);
-    transition: box-shadow 150ms ease-out;
-  }
-  .button-upload:hover {
-    box-shadow: 0 3px 5px rgba(50, 50, 50, 0.1);
-  }
-</style>
 
 <div class="flex-col max-w-screen-xl mx-auto customize-model px-20 py-16">
   <div class="flex-col">
@@ -140,12 +117,14 @@
             name="2d"
             color={`${model === '2d' ? 'primary' : 'secondary'}`}
             className="mr-2 rounded-lg font-bold"
-            {handleClick} />
+            {handleClick}
+          />
           <Button
             name="linear"
             color={`${model === 'linear' ? 'primary' : 'secondary'}`}
             className="rounded font-bold"
-            {handleClick} />
+            {handleClick}
+          />
         </div>
       </div>
       <div class="py-3">
@@ -155,12 +134,14 @@
             value={neuronCount}
             color="primary"
             className="focus:background-color rounded-lg"
-            handleChange={handleChangeNeuronCount} />
+            handleChange={handleChangeNeuronCount}
+          />
           {#if modelError}
             <div
               class="flex flex-col ml-5"
               in:fly={{ x: 200, duration: 200 }}
-              out:fade>
+              out:fade
+            >
               <p style="color: red; font-weight: bold; font-size: 12px">
                 Invalid Dataset!
               </p>
@@ -185,7 +166,8 @@
             value={learningRate}
             color="primary"
             className="focus:background-color rounded-lg"
-            handleChange={handleChangeLearningRate} />
+            handleChange={handleChangeLearningRate}
+          />
         </div>
       </div>
       <div class="py-3 px-5">
@@ -195,7 +177,8 @@
             value={epoch}
             color="primary"
             className="focus:background-color rounded-lg"
-            handleChange={handleChangeEpoch} />
+            handleChange={handleChangeEpoch}
+          />
         </div>
       </div>
       <div class="py-3 px-5">
@@ -205,7 +188,8 @@
             value={radius}
             color="primary"
             className="focus:background-color rounded-lg"
-            handleChange={handleChangeRadius} />
+            handleChange={handleChangeRadius}
+          />
         </div>
       </div>
     </div>
@@ -221,7 +205,8 @@
         className="py-2"
         value="1"
         {selected}
-        {handleChange} />
+        {handleChange}
+      />
       {#if selected === '1'}
         <div class="mt-1 ml-8 mb-5">
           <p class="mb-1">Dataset Size</p>
@@ -229,24 +214,27 @@
             color="primary"
             value={presetDatasetSize}
             className="focus:background-color rounded-lg"
-            handleChange={handleChangePresetDataset} />
+            handleChange={handleChangePresetDataset}
+          />
         </div>
       {/if}
       <RadioButton
         name="dataset"
         id="custom-dataset"
-        label={`Use Custom Dataset (Shape: ${customDataset.length}x${customDataset[0]?.length ?? 0})`}
+        label={`Use Custom Dataset (Shape: ${customDataset.length}x${customDataset[0] ? customDataset[0].length : 0})`}
         className="py-2"
         value="2"
         {selected}
-        {handleChange} />
+        {handleChange}
+      />
       {#if openCreateDataset}
         <CreateDataset
           on:save={(e) => {
             console.log(e.detail);
             customDataset = e.detail;
           }}
-          on:close={() => (openCreateDataset = false)} />
+          on:close={() => (openCreateDataset = false)}
+        />
       {/if}
     </div>
   </div>
@@ -255,6 +243,30 @@
       name="Save"
       color="primary"
       className="mr-2 rounded-lg font-bold"
-      handleClick={handleSave} />
+      handleClick={handleSave}
+    />
   </div>
 </div>
+
+<style type="text/scss">
+  .customize-model {
+    padding-bottom: 64px;
+  }
+  hr {
+    border: none;
+    height: 1px;
+    background-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0)
+    );
+  }
+  .button-upload {
+    border: 1px solid var(--primary);
+    transition: box-shadow 150ms ease-out;
+  }
+  .button-upload:hover {
+    box-shadow: 0 3px 5px rgba(50, 50, 50, 0.1);
+  }
+</style>

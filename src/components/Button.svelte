@@ -1,14 +1,24 @@
 <script lang="ts">
   export let name: string;
   export let color: string;
-  export let className: string = "";
-  export let handleClick: svelte.JSX.EventHandler<Event, HTMLInputElement>;
+  export let className: string = '';
+  export let handleClick: any;
 
   let hover = false;
   const handleHover = () => {
     hover = !hover;
   };
 </script>
+
+<button
+  on:mouseover={handleHover}
+  on:mouseout={handleHover}
+  on:click={handleClick}
+  class={`${color} ${className}`}
+  {name}
+>
+  {name}
+</button>
 
 <style type="text/scss">
   button {
@@ -37,12 +47,3 @@
     filter: brightness(1.2);
   }
 </style>
-
-<button
-  on:mouseover={handleHover}
-  on:mouseout={handleHover}
-  on:click={handleClick}
-  class={`${color} ${className}`}
-  {name}>
-  {name}
-</button>

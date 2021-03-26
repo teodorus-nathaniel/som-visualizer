@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { spring } from "svelte/motion";
-  import { onMount } from "svelte";
-  import { pannable } from "../../actions/pannable";
-  import type { Coord } from "../../models/Coord";
-  import CartesianPoint from "./CartesianPoint.svelte";
-  import CartesianLine from "./CartesianLine.svelte";
-  import getNearestElement from "../../utils/getNearestElement";
-  import getRainbowColors from "../../utils/getRainbowColors";
+  import { spring } from 'svelte/motion';
+  import { onMount } from 'svelte';
+  import { pannable } from '../../actions/pannable';
+  import type { Coord } from '../../models/Coord';
+  import CartesianPoint from './CartesianPoint.svelte';
+  import CartesianLine from './CartesianLine.svelte';
+  import getNearestElement from '../../utils/getNearestElement';
+  import getRainbowColors from '../../utils/getRainbowColors';
 
   export let neurons: Coord[][];
   export let scale: number;
@@ -19,32 +19,32 @@
   let springDefault = {
     stiffness: 0.15,
     damping: 0.8,
-    precision: 0.001
+    precision: 0.001,
   };
   let coords = spring(
     {
       x: 0,
-      y: 0
+      y: 0,
     },
     springDefault
   );
 
-  function handlePanMove(event) {
+  const handlePanMove = ((event) => {
     coords.update((coords) => ({
       x: coords.x - event.detail.dx,
-      y: coords.y - event.detail.dy
+      y: coords.y - event.detail.dy,
     }));
-  }
+  }) as any;
 
   onMount(() => {
     containerSize = {
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     };
     coords.damping = coords.stiffness = 1;
     coords.set({
       x: -window.innerWidth / 2,
-      y: -window.innerHeight / 2
+      y: -window.innerHeight / 2,
     });
 
     coords.damping = springDefault.damping;
@@ -64,27 +64,15 @@
   $: length = neurons.length * neurons[0].length;
 </script>
 
-<style type="text/scss">
-  line {
-    stroke: black;
-    stroke-width: 1px;
-  }
-  svg {
-    cursor: grab;
-    &:active {
-      cursor: grabbing;
-    }
-  }
-</style>
-
 <div>
   <svg
-    use:pannable
     on:panmove={handlePanMove}
+    use:pannable
     class="root"
     viewBox={`${$coords.x} ${$coords.y} ${containerSize.width} ${containerSize.height}`}
     width={containerSize.width}
-    height={containerSize.height}>
+    height={containerSize.height}
+  >
     <line x1={-lineSize} y1={0} x2={lineSize} y2={0} />
     <line x1={0} y1={-lineSize} x2={0} y2={lineSize} />
     {#each neurons as row, i (i)}
@@ -103,7 +91,8 @@
           highlightPoint={i === winningNeuron[0] && j === winningNeuron[1]}
           color={getRainbowColors((i * neurons.length + j) / length)}
           point={neuron}
-          {scale} />
+          {scale}
+        />
       {/each}
     {/each}
     {#each dataPoints as point, i (i)}
@@ -112,7 +101,21 @@
         {point}
         {scale}
         highlightPoint={i === evaluatedPoint}
-        small />
+        small
+      />
     {/each}
   </svg>
 </div>
+
+<style type="text/scss">
+  line {
+    stroke: black;
+    stroke-width: 1px;
+  }
+  svg {
+    cursor: grab;
+    &:active {
+      cursor: grabbing;
+    }
+  }
+</style>
