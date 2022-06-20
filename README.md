@@ -10,3 +10,11 @@ The algorithm simplified step by step:
 - Get the winner neuron (nearest neuron to the data point)
 - Move the neuron and its neighboring neurons closer to the data point
 - Repeat
+
+# How to Run
+### Development
+- `npm run dev`
+
+### Production
+- `npm run build`
+- `npm start`
