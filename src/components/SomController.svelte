@@ -71,7 +71,6 @@
       doneTraining = true;
       return;
     }
-    console.log(iteration.value);
     neurons = iteration.value.weights ?? neurons;
     winningNeuron = iteration.value.bmu ?? [-1, -1];
     evaluatedPoint = iteration.value.dataIndex ?? -1;

@@ -230,7 +230,6 @@
       {#if openCreateDataset}
         <CreateDataset
           on:save={(e) => {
-            console.log(e.detail);
             customDataset = e.detail;
           }}
           on:close={() => (openCreateDataset = false)}
