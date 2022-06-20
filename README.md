@@ -1,31 +1,12 @@
-# Svelte + Typescript + TailwindCSS + SCSS Template
+# Project Overview
+SOM Visualizer is made to help study and understand Self Organizing Map (SOM) by visualizing the training and the neurons' movements.
+This project is made using `svelte` with `typescript` and `tailwind`.
 
-This is a template, use the command below to setup a new project
-
-## Use
-
-```
-npx degit https://github.com/skflowne/svelte-ts-scss-tailwind-template my-new-app
-cd my-new-app
-yarn
-```
-
-Run in development
-
-```
-yarn dev
-```
-
-Build for production
-
-```
-yarn build
-```
-
-## VSCode extension for Svelte
-
-You'll need to install this extension to enjoy full Typescript support in VSCode
-
-https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode
-
-Don't forget to remove the old one if you had it installed (instructions are in the link)
+## Self Organizing Map
+SOM itself is an unsupervised AI Algorithm to cluster data points.  
+Each cluster represented by neurons.  
+The algorithm simplified step by step:
+- Choose a data point
+- Get the winner neuron (nearest neuron to the data point)
+- Move the neuron and its neighboring neurons closer to the data point
+- Repeat
