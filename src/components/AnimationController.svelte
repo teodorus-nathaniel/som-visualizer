@@ -40,8 +40,8 @@
   }
   .rounded-btn {
     border-radius: 50%;
-    width: 25px;
-    height: 25px;
+    width: 35px;
+    height: 35px;
     background: black;
     color: white;
   }
@@ -52,7 +52,6 @@
   }
   .epoch-label {
     position: relative;
-    top: 3px;
   }
 </style>
 
@@ -68,7 +67,7 @@
         <Icon data={plusCircle} />
       </div>
     </div>
-    <div class="play-btn flex align-center">
+    <div class="play-btn flex items-center">
       <p class="mx-2 epoch-label">Autoplay</p>
       <button
         on:click={() => handleAutoplay(true)}
@@ -81,7 +80,7 @@
         <Icon data={pauseCircle} scale="1.5" />
       </button>
     </div>
-    <div class="skip-btn flex align-center">
+    <div class="skip-btn flex items-center">
       <p class="mx-2 epoch-label">Skip Epoch</p>
       <button
         class="rounded-btn mx-2"
